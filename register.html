@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome to YIDANA PARENT CONNECT - Register</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2e8b57, #55a868);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #fff;
+    }
+    .register-container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      width: 420px;
+      text-align: center;
+      color: #333;
+    }
+    h1.welcome {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      color: #2e8b57;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    h1.welcome span {
+      font-size: 2.5rem;
+    }
+    h2 {
+      margin-bottom: 25px;
+      color: #555;
+      font-weight: 600;
+    }
+    select, input {
+      width: 100%;
+      padding: 12px 10px;
+      margin: 10px 0 20px;
+      border-radius: 6px;
+      border: 1.5px solid #ccc;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+    select:focus, input:focus {
+      outline: none;
+      border-color: #2e8b57;
+      box-shadow: 0 0 6px #2e8b57aa;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #2e8b57;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #246b45;
+    }
+    p {
+      margin-top: 18px;
+      font-size: 0.95rem;
+      color: #666;
+    }
+    a {
+      color: #2e8b57;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .error-msg {
+      color: #cc0000;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .success-msg {
+      color: #2e8b57;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container" role="main">
+    <h1 class="welcome" aria-label="Welcome to YIDANA PARENT CONNECT">
+      Welcome to YIDANA PARENT CONNECT <span aria-hidden="true">👋</span>
+    </h1>
+    <h2>Create Your Account</h2>
+
+    <div id="message" role="alert" aria-live="polite"></div>
+
+    <form id="registerForm" aria-describedby="roleHelp" novalidate>
+      <label for="role" id="roleHelp" style="font-weight:600;">Select Role</label>
+      <select id="role" name="role" required aria-required="true" aria-describedby="roleHelp">
+        <option value="" disabled selected>Select Role</option>
+        <option value="parent">Parent</option>
+        <option value="teacher">Teacher</option>
+      </select>
+
+      <!-- Parent fields -->
+      <div id="parentFields" style="display:none;" aria-hidden="true">
+        <input type="text" id="parentFullName" name="parentFullName" placeholder="Parent's Full Name" aria-label="Parent's Full Name" />
+        <input type="tel" id="parentMobile" name="parentMobile" placeholder="Mobile Number" aria-label="Mobile Number" />
+        <input type="email" id="parentEmail" name="parentEmail" placeholder="Email Address" aria-label="Email Address" />
+        <input type="text" id="childName" name="childName" placeholder="Child's Name" aria-label="Child's Name" />
+        <input type="text" id="childClass" name="childClass" placeholder="Child's Class" aria-label="Child's Class" />
+      </div>
+
+      <!-- Teacher fields -->
+      <div id="teacherFields" style="display:none;" aria-hidden="true">
+        <input type="text" id="teacherFullName" name="teacherFullName" placeholder="Teacher's Full Name" aria-label="Teacher's Full Name" />
+        <input type="text" id="teacherClass" name="teacherClass" placeholder="Class you teach" aria-label="Class you teach" />
+        <input type="tel" id="teacherMobile" name="teacherMobile" placeholder="Mobile Number" aria-label="Mobile Number" />
+        <input type="email" id="teacherEmail" name="teacherEmail" placeholder="Email Address" aria-label="Email Address" />
+        <input type="text" id="teacherSubjects" name="teacherSubjects" placeholder="Subject(s) taught" aria-label="Subject(s) taught" />
+      </div>
+
+      <button type="submit" aria-label="Register Account">Register</button>
+    </form>
+
+    <p>
+      Already have an account? <a href="login.html" aria-label="Go to Login Page">Login here</a>
+    </p>
+  </div>
+
+  <script>
+    const roleSelect = document.getElementById('role');
+    const parentFields = document.getElementById('parentFields');
+    const teacherFields = document.getElementById('teacherFields');
+    const registerForm = document.getElementById('registerForm');
+    const messageDiv = document.getElementById('message');
+
+    roleSelect.addEventListener('change', () => {
+      messageDiv.textContent = '';
+      if(roleSelect.value === 'parent') {
+        parentFields.style.display = 'block';
+        parentFields.setAttribute('aria-hidden', 'false');
+        teacherFields.style.display = 'none';
+        teacherFields.setAttribute('aria-hidden', 'true');
+        setRequired(parentFields, true);
+        setRequired(teacherFields, false);
+      } else if(roleSelect.value === 'teacher') {
+        parentFields.style.display = 'none';
+        parentFields.setAttribute('aria-hidden', 'true');
+        teacherFields.style.display = 'block';
+        teacherFields.setAttribute('aria-hidden', 'false');
+        setRequired(parentFields, false);
+        setRequired(teacherFields, true);
+      } else {
+        parentFields.style.display = 'none';
+        parentFields.setAttribute('aria-hidden', 'true');
+        teacherFields.style.display = 'none';
+        teacherFields.setAttribute('aria-hidden', 'true');
+        setRequired(parentFields, false);
+        setRequired(teacherFields, false);
+      }
+    });
+
+    function setRequired(container, required) {
+      const inputs = container.querySelectorAll('input');
+      inputs.forEach(input => input.required = required);
+    }
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      messageDiv.textContent = '';
+      messageDiv.className = '';
+
+      const role = roleSelect.value;
+      if (!role) {
+        messageDiv.textContent = 'Please select a role.';
+        messageDiv.className = 'error-msg';
+        return;
+      }
+
+      let payload = {};
+
+      if (role === 'parent') {
+        payload = {
+          fullName: document.getElementById('parentFullName').value.trim(),
+          mobile: document.getElementById('parentMobile').value.trim(),
+          email: document.getElementById('parentEmail').value.trim(),
+          childName: document.getElementById('childName').value.trim(),
+          childClass: document.getElementById('childClass').value.trim(),
+        };
+
+        if (Object.values(payload).some(v => !v)) {
+          messageDiv.textContent = 'Please fill in all parent fields.';
+          messageDiv.className = 'error-msg';
+          return;
+        }
+      } else if (role === 'teacher') {
+        payload = {
+          fullName: document.getElementById('teacherFullName').value.trim(),
+          class: document.getElementById('teacherClass').value.trim(),
+          mobile: document.getElementById('teacherMobile').value.trim(),
+          email: document.getElementById('teacherEmail').value.trim(),
+          subjects: document.getElementById('teacherSubjects').value.trim(),
+        };
+
+        if (Object.values(payload).some(v => !v)) {
+          messageDiv.textContent = 'Please fill in all teacher fields.';
+          messageDiv.className = 'error-msg';
+          return;
+        }
+      }
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/register/${role}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          messageDiv.textContent = `Registration successful! Your ID: ${data.id}, PIN: ${data.pin}. Redirecting to login...`;
+          messageDiv.className = 'success-msg';
+
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 5000);
+        } else {
+          messageDiv.textContent = data.message || 'Registration failed. Try again.';
+          messageDiv.className = 'error-msg';
+        }
+      } catch (err) {
+        messageDiv.textContent = 'Server error. Please try later.';
+        messageDiv.className = 'error-msg';
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Teacher Dashboard - YIDANA CONNECT</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  /* Light and Dark Themes */
+  :root {
+    --primary-color: #4e54c8;
+    --secondary-color: #8f94fb;
+    --bg-color: #f0f4f8;
+    --text-color: #333;
+    --header-bg: linear-gradient(90deg, #4e54c8, #8f94fb);
+    --table-header-bg: #6c70d6;
+    --table-row-bg: #f0f4f8;
+    --btn-bg: #4e54c8;
+    --btn-hover-bg: #3b3f9f;
+    --card-bg: white;
+    --border-color: #ddd;
+  }
+  body.dark {
+    --primary-color: #a3a9f7;
+    --secondary-color: #7079d1;
+    --bg-color: #1e1e2f;
+    --text-color: #d0d0d7;
+    --header-bg: linear-gradient(90deg, #7079d1, #4b4f7a);
+    --table-header-bg: #7079d1;
+    --table-row-bg: #2a2b45;
+    --btn-bg: #7079d1;
+    --btn-hover-bg: #5a5ec8;
+    --card-bg: #2a2b45;
+    --border-color: #555;
+  }
+
+  header {
+    background: var(--header-bg);
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+
+  /* Profile Section */
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+  }
+  .profile input[type="file"] {
+    display: none;
+  }
+  .upload-label {
+    cursor: pointer;
+    background: var(--secondary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+  }
+  .upload-label:hover {
+    background: var(--primary-color);
+  }
+
+  /* Theme Toggle Button */
+  .theme-toggle {
+    cursor: pointer;
+    background: var(--secondary-color);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    user-select: none;
+    transition: background 0.3s ease;
+  }
+  .theme-toggle:hover {
+    background: var(--primary-color);
+  }
+
+  /* Welcome message */
+  .welcome {
+    background: var(--card-bg);
+    margin: 20px 40px;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(78, 84, 200, 0.15);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: center;
+    letter-spacing: 1.2px;
+  }
+
+  /* Layout */
+  main {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    margin: 20px 40px 60px 40px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  .sidebar section {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+  }
+  .sidebar section:last-child {
+    border: none;
+  }
+  .sidebar h2 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+  }
+
+  /* Calendar */
+  #calendar {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  #calendar th, #calendar td {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+  }
+  #calendar th {
+    background: var(--table-header-bg);
+    color: white;
+  }
+  #calendar td.today {
+    background: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+  }
+
+  /* Time display */
+  .time-display {
+    font-size: 1.1rem;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 600;
+    color: var(--secondary-color);
+  }
+
+  /* Main Content Area */
+  .content {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 25px 30px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .content section {
+    background: var(--bg-color);
+    border-radius: 12px;
+    padding: 15px 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  .content h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+  }
+
+  /* Table styling for student, grades, attendance */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  th, td {
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+  }
+  th {
+    background: var(--table-header-bg);
+    color: white;
+    text-align: left;
+  }
+  tr:nth-child(even) {
+    background: var(--table-row-bg);
+  }
+  tr:hover {
+    background: var(--secondary-color);
+    color: white;
+  }
+
+  /* Buttons */
+  button {
+    background: var(--btn-bg);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-weight: 600;
+  }
+  button:hover {
+    background: var(--btn-hover-bg);
+  }
+
+  /* Input for grades */
+  input.grade-input {
+    width: 50px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  input.grade-input:focus {
+    outline: 2px solid var(--primary-color);
+  }
+
+  /* Attendance clickable cells */
+  td.attendance-cell {
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+  }
+  td.attendance-present {
+    background: #4CAF50;
+    color: white;
+    font-weight: 700;
+  }
+  td.attendance-absent {
+    background: #e74c3c;
+    color: white;
+    font-weight: 700;
+  }
+
+  /* Search input */
+  #studentSearch {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  /* Announcements */
+  .announcement-list {
+    max-height: 120px;
+    overflow-y: auto;
+    margin-top: 8px;
+  }
+  .announcement-item {
+    background: var(--card-bg);
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* Messages */
+  #messages {
+    max-height: 180px;
+    overflow-y: auto;
+    background: var(--table-row-bg);
+    padding: 10px;
+    border-radius: 12px;
+  }
+  .message-item {
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    main {
+      grid-template-columns: 1fr;
+      margin: 20px;
+    }
+    header {
+      padding: 15px 20px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>YIDANA CONNECT - Teacher Dashboard</h1>
+  <div class="profile">
+    <img id="profileImage" src="https://via.placeholder.com/50" alt="Profile Picture" />
+    <label for="profileUpload" class="upload-label" title="Change Profile Picture">Upload</label>
+    <input type="file" id="profileUpload" accept="image/*" />
+  </div>
+  <div class="theme-toggle" id="themeToggle">Switch Theme</div>
+</header>
+
+<div class="welcome" id="welcomeMessage">
+  Welcome, Teacher!
+</div>
+
+<main>
+  <aside class="sidebar">
+    <section>
+      <h2>Calendar</h2>
+      <table id="calendar" aria-label="Monthly calendar"></table>
+      <div class="time-display" id="timeDisplay"></div>
+    </section>
+
+    <section>
+      <h2>Announcements</h2>
+      <div id="announcementList" class="announcement-list" aria-live="polite" aria-relevant="additions"></div>
+      <input type="text" id="announcementInput" placeholder="Add announcement..." aria-label="Announcement text" />
+      <button id="addAnnouncementBtn" aria-label="Add announcement">Add</button>
+    </section>
+
+    <section>
+      <h2>Messages</h2>
+      <div id="messages" aria-live="polite" aria-relevant="additions"></div>
+      <input type="text" id="messageInput" placeholder="Type message..." aria-label="Message input" />
+      <button id="sendMessageBtn" aria-label="Send message">Send</button>
+    </section>
+  </aside>
+
+  <section class="content">
+    <section aria-label="Student attendance management">
+      <h2>Attendance</h2>
+      <table id="attendanceTable" aria-describedby="attendanceHelp">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Present</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+      <p id="attendanceHelp" style="font-size:0.9rem; color: var(--secondary-color);">Click on attendance cells to toggle present/absent status.</p>
+    </section>
+
+    <section aria-label="Student grades management">
+      <h2>Grades</h2>
+      <input type="text" id="studentSearch" placeholder="Search student by name..." aria-label="Search student" />
+      <table id="gradesTable" aria-describedby="gradesHelp">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Grade</th>
+            <th>Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+      <p id="gradesHelp" style="font-size:0.9rem; color: var(--secondary-color);">Edit grade and click Update.</p>
+    </section>
+  </section>
+</main>
+
+<script>
+  // Sample data
+  const students = [
+    { id: 1, name: "John Doe", grade: 85, attendance: false },
+    { id: 2, name: "Jane Smith", grade: 92, attendance: true },
+    { id: 3, name: "Alice Johnson", grade: 78, attendance: false },
+    { id: 4, name: "Bob Brown", grade: 88, attendance: true },
+    { id: 5, name: "Eve Davis", grade: 95, attendance: true },
+  ];
+
+  // Profile Picture Upload
+  const profileImage = document.getElementById('profileImage');
+  const profileUpload = document.getElementById('profileUpload');
+  profileUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      profileImage.src = reader.result;
+      // Could save to localStorage or backend here
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Theme Toggle
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+  themeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark');
+  });
+
+  // Welcome message - Simulate logged in teacher name
+  const welcomeMessage = document.getElementById('welcomeMessage');
+  const teacherName = "Ms. Thompson"; // Replace with actual from login/session
+  welcomeMessage.textContent = `Welcome, ${teacherName}!`;
+
+  // Calendar rendering function
+  function renderCalendar(year, month) {
+    const calendar = document.getElementById('calendar');
+    calendar.innerHTML = ''; // Clear previous
+
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    // Create header row for days of week
+    let headerRow = document.createElement('tr');
+    for (let day of daysOfWeek) {
+      const th = document.createElement('th');
+      th.textContent = day;
+      headerRow.appendChild(th);
+    }
+    calendar.appendChild(headerRow);
+
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1).getDay();
+    const numDays = new Date(year, month + 1, 0).getDate();
+
+    let date = 1;
+    for (let row = 0; row < 6; row++) {
+      let tr = document.createElement('tr');
+      for (let col = 0; col < 7; col++) {
+        let td = document.createElement('td');
+        if (row === 0 && col < firstDay) {
+          td.textContent = '';
+        } else if (date > numDays) {
+          td.textContent = '';
+        } else {
+          td.textContent = date;
+
+          // Highlight today's date
+          const today = new Date();
+          if (date === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+            td.classList.add('today');
+          }
+          date++;
+        }
+        tr.appendChild(td);
+      }
+      calendar.appendChild(tr);
+      if (date > numDays) break;
+    }
+  }
+
+  // Display current time
+  function updateTime() {
+    const timeDisplay = document.getElementById('timeDisplay');
+    const now = new Date();
+    timeDisplay.textContent = now.toLocaleTimeString();
+  }
+
+  // Attendance Table Render
+  const attendanceTableBody = document.querySelector('#attendanceTable tbody');
+  function renderAttendance() {
+    attendanceTableBody.innerHTML = '';
+    students.forEach((student) => {
+      const tr = document.createElement('tr');
+
+      const nameTd = document.createElement('td');
+      nameTd.textContent = student.name;
+      tr.appendChild(nameTd);
+
+      const attendanceTd = document.createElement('td');
+      attendanceTd.classList.add('attendance-cell');
+      attendanceTd.textContent = student.attendance ? 'Present' : 'Absent';
+      attendanceTd.classList.toggle('attendance-present', student.attendance);
+      attendanceTd.classList.toggle('attendance-absent', !student.attendance);
+      attendanceTd.setAttribute('tabindex', '0');
+      attendanceTd.setAttribute('role', 'button');
+      attendanceTd.setAttribute('aria-pressed', student.attendance);
+      attendanceTd.setAttribute('aria-label', `Mark ${student.name} as ${student.attendance ? 'absent' : 'present'}`);
+
+      // Toggle attendance on click or Enter/Space keypress
+      attendanceTd.addEventListener('click', () => {
+        student.attendance = !student.attendance;
+        renderAttendance();
+      });
+      attendanceTd.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          student.attendance = !student.attendance;
+          renderAttendance();
+        }
+      });
+
+      tr.appendChild(attendanceTd);
+      attendanceTableBody.appendChild(tr);
+    });
+  }
+
+  // Grades Table Render + Search + Edit + Update
+  const gradesTableBody = document.querySelector('#gradesTable tbody');
+  const studentSearchInput = document.getElementById('studentSearch');
+
+  function renderGrades(filter = '') {
+    gradesTableBody.innerHTML = '';
+    const filteredStudents = students.filter(s =>
+      s.name.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    filteredStudents.forEach(student => {
+      const tr = document.createElement('tr');
+
+      const nameTd = document.createElement('td');
+      nameTd.textContent = student.name;
+      tr.appendChild(nameTd);
+
+      const gradeTd = document.createElement('td');
+      const gradeInput = document.createElement('input');
+      gradeInput.type = 'number';
+      gradeInput.min = 0;
+      gradeInput.max = 100;
+      gradeInput.value = student.grade;
+      gradeInput.className = 'grade-input';
+      gradeInput.setAttribute('aria-label', `Grade for ${student.name}`);
+      gradeTd.appendChild(gradeInput);
+      tr.appendChild(gradeTd);
+
+      const updateTd = document.createElement('td');
+      const updateBtn = document.createElement('button');
+      updateBtn.textContent = 'Update';
+      updateBtn.setAttribute('aria-label', `Update grade for ${student.name}`);
+
+      updateBtn.addEventListener('click', () => {
+        let newGrade = Number(gradeInput.value);
+        if (isNaN(newGrade) || newGrade < 0 || newGrade > 100) {
+          alert('Please enter a valid grade between 0 and 100.');
+          return;
+        }
+        student.grade = newGrade;
+        alert(`Grade updated for ${student.name} to ${newGrade}`);
+      });
+
+      updateTd.appendChild(updateBtn);
+      tr.appendChild(updateTd);
+
+      gradesTableBody.appendChild(tr);
+    });
+  }
+
+  studentSearchInput.addEventListener('input', (e) => {
+    renderGrades(e.target.value);
+  });
+
+  // Announcements section
+  const announcementList = document.getElementById('announcementList');
+  const announcementInput = document.getElementById('announcementInput');
+  const addAnnouncementBtn = document.getElementById('addAnnouncementBtn');
+  const announcements = [];
+
+  function renderAnnouncements() {
+    announcementList.innerHTML = '';
+    announcements.forEach((msg, index) => {
+      const div = document.createElement('div');
+      div.className = 'announcement-item';
+      div.textContent = msg;
+      announcementList.appendChild(div);
+    });
+  }
+
+  addAnnouncementBtn.addEventListener('click', () => {
+    const text = announcementInput.value.trim();
+    if (text === '') return alert('Please enter an announcement.');
+    announcements.unshift(text);
+    if (announcements.length > 5) announcements.pop();
+    renderAnnouncements();
+    announcementInput.value = '';
+  });
+
+  // Messaging section
+  const messagesDiv = document.getElementById('messages');
+  const messageInput = document.getElementById('messageInput');
+  const sendMessageBtn = document.getElementById('sendMessageBtn');
+  const messages = [];
+
+  function renderMessages() {
+    messagesDiv.innerHTML = '';
+    messages.forEach(({ text, sender }) => {
+      const div = document.createElement('div');
+      div.className = 'message-item';
+      div.textContent = `${sender}: ${text}`;
+      messagesDiv.appendChild(div);
+    });
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  sendMessageBtn.addEventListener('click', () => {
+    const text = messageInput.value.trim();
+    if (text === '') return alert('Cannot send empty message.');
+    messages.push({ text, sender: teacherName });
+    renderMessages();
+    messageInput.value = '';
+  });
+
+  // Initialize
+  function init() {
+    const now = new Date();
+    renderCalendar(now.getFullYear(), now.getMonth());
+    updateTime();
+    setInterval(updateTime, 1000);
+    renderAttendance();
+    renderGrades();
+    renderAnnouncements();
+    renderMessages();
+  }
+  init();
+</script>
+</body>
+</html>

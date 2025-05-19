@@ -1,0 +1,120 @@
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f2f5;
+  margin: 0;
+  padding: 0;
+}
+
+/* Welcome Message Floating */
+.welcome-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a73e8;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 12px;
+  font-size: 18px;
+  animation: float 3s infinite alternate;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  z-index: 999;
+}
+
+@keyframes float {
+  from { transform: translateX(-50%) translateY(0); }
+  to { transform: translateX(-50%) translateY(10px); }
+}
+
+/* Container Box Shared by Login and Register */
+.login-container,
+.registration-container {
+  margin: 120px auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.login-container h2,
+.registration-container h2 {
+  margin-bottom: 10px;
+  color: #1a73e8;
+}
+
+.login-container p,
+.registration-container p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+/* Forms */
+form {
+  margin-top: 15px;
+}
+
+.form-box {
+  margin-top: 20px;
+  text-align: left;
+}
+
+/* Inputs and Select */
+input, select {
+  display: block;
+  margin: 10px auto;
+  padding: 12px;
+  width: 90%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+/* Buttons */
+button {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 24px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #388e3c;
+}
+
+/* Links */
+.back-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.back-link a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.back-link a:hover {
+  text-decoration: underline;
+}
+
+/* Themes Placeholder */
+body.default-theme {
+  background-color: #f0f2f5;
+}
+
+/* You can later add classes for red-theme, green-theme, etc. */
+

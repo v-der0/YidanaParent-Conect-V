@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Parent Dashboard - Yidana Parents Connect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --accent-color: #4CAF50;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background-color: var(--accent-color);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      color: white;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 12px;
+      margin: 4px 0;
+      cursor: pointer;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: background 0.3s;
+    }
+
+    .tab:hover,
+    .tab.active {
+      background-color: white;
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    .main {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .content {
+      display: none;
+    }
+
+    .content.active {
+      display: block;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    #themeSelector {
+      margin-top: auto;
+      margin-bottom: 20px;
+    }
+
+    select, textarea, input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .chat-box {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>📘 Yidana Dashboard</h2>
+  <div class="tab active" onclick="showTab('performance')">📊 Performance</div>
+  <div class="tab" onclick="showTab('attendance')">📅 Attendance</div>
+  <div class="tab" onclick="showTab('timetable')">📘 Timetable</div>
+  <div class="tab" onclick="showTab('announcements')">📢 Announcements</div>
+  <div class="tab" onclick="showTab('complaints')">✉️ Complaints</div>
+  <div class="tab" onclick="showTab('chatroom')">💬 Chat Room</div>
+  <div class="tab" onclick="showTab('permission')">📝 Absence Permission</div>
+  <div class="tab" onclick="showTab('profile')">👤 Profile</div>
+  <div id="themeSelector">
+    <label for="theme">🎨 Theme:</label>
+    <select id="theme" onchange="switchTheme()">
+      <option value="white">White (Default)</option>
+      <option value="red">Red</option>
+      <option value="yellow">Yellow</option>
+      <option value="green">Green</option>
+      <option value="black">Black</option>
+    </select>
+  </div>
+</div>
+
+<div class="main">
+  <div class="content active" id="performance">
+    <h2>Performance (Grades)</h2>
+    <table>
+      <thead><tr><th>Subject</th><th>Score</th><th>Grade</th></tr></thead>
+      <tbody id="gradesTable"></tbody>
+    </table>
+  </div>
+
+  <div class="content" id="attendance">
+    <h2>Attendance Record</h2>
+    <p><strong>Days Present:</strong> <span id="daysPresent"></span></p>
+    <p><strong>Days Absent:</strong> <span id="daysAbsent"></span></p>
+  </div>
+
+  <div class="content" id="timetable">
+    <h2>Timetable</h2>
+    <table>
+      <thead><tr><th>Day</th><th>Subject</th><th>Time</th></tr></thead>
+      <tbody id="timetableTable"></tbody>
+    </table>
+  </div>
+
+  <div class="content" id="announcements">
+    <h2>School Announcements</h2>
+    <ul id="announcementsList"></ul>
+  </div>
+
+  <div class="content" id="complaints">
+    <h2>Submit a Complaint</h2>
+    <textarea id="complaintText" rows="4" placeholder="Describe your issue or concern..."></textarea>
+    <button onclick="submitComplaint()">Submit Complaint</button>
+  </div>
+
+  <div class="content" id="chatroom">
+    <h2>Chat Room</h2>
+    <div class="chat-box" id="chatBox">
+      <p><strong>Teacher:</strong> Hello Parent!</p>
+    </div>
+    <input type="text" id="chatInput" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <div class="content" id="permission">
+    <h2>Permission for Child Absence</h2>
+    <textarea id="absenceReason" rows="4" placeholder="State reason for your child's absence..."></textarea>
+    <button onclick="requestPermission()">Request Permission</button>
+  </div>
+
+  <div class="content" id="profile">
+    <h2>Child Profile</h2>
+    <p><strong>Name:</strong> <span id="childName"></span></p>
+    <p><strong>Class:</strong> <span id="childClass"></span></p>
+    <p><strong>Parent ID:</strong> <span id="parentIdDisplay"></span></p>
+  </div>
+</div>
+
+<script>
+  function showTab(tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+
+    document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  function switchTheme() {
+    const theme = document.getElementById("theme").value;
+    const root = document.documentElement;
+    const themes = {
+      white: ['#ffffff', '#000000', '#4CAF50'],
+      red: ['#ffebeb', '#400000', '#e53935'],
+      yellow: ['#fffde7', '#665c00', '#fdd835'],
+      green: ['#e8f5e9', '#1b5e20', '#43a047'],
+      black: ['#121212', '#ffffff', '#212121']
+    };
+    const [bg, text, accent] = themes[theme];
+    root.style.setProperty('--bg-color', bg);
+    root.style.setProperty('--text-color', text);
+    root.style.setProperty('--accent-color', accent);
+  }
+
+  const parentId = localStorage.getItem("parentId") || "PARENT001";
+  document.getElementById("parentIdDisplay").textContent = parentId;
+
+  async function fetchDashboardData() {
+    try {
+      const res = await fetch(`http://localhost:5000/api/parent/${parentId}/dashboard`);
+      const data = await res.json();
+
+      document.getElementById("childName").textContent = data.childName;
+      document.getElementById("childClass").textContent = data.childClass;
+
+      const gradesTable = document.getElementById("gradesTable");
+      gradesTable.innerHTML = "";
+      data.grades.forEach(g => {
+        gradesTable.innerHTML += `<tr><td>${g.subject}</td><td>${g.score}</td><td>${g.grade}</td></tr>`;
+      });
+
+      document.getElementById("daysPresent").textContent = data.attendance.present;
+      document.getElementById("daysAbsent").textContent = data.attendance.absent;
+
+      const timetableTable = document.getElementById("timetableTable");
+      timetableTable.innerHTML = "";
+      data.timetable.forEach(t => {
+        timetableTable.innerHTML += `<tr><td>${t.day}</td><td>${t.subject}</td><td>${t.time}</td></tr>`;
+      });
+
+      const announcementsList = document.getElementById("announcementsList");
+      announcementsList.innerHTML = "";
+      data.announcements.forEach(a => {
+        announcementsList.innerHTML += `<li>${a}</li>`;
+      });
+
+    } catch (err) {
+      console.error("Failed to fetch dashboard data:", err);
+    }
+  }
+
+  function submitComplaint() {
+    const complaint = document.getElementById("complaintText").value;
+    if (!complaint) return alert("Please write your complaint.");
+    alert("Complaint submitted successfully.");
+    document.getElementById("complaintText").value = "";
+  }
+
+  function sendMessage() {
+    const input = document.getElementById("chatInput");
+    if (!input.value.trim()) return;
+    const box = document.getElementById("chatBox");
+    box.innerHTML += `<p><strong>You:</strong> ${input.value}</p>`;
+    input.value = "";
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function requestPermission() {
+    const reason = document.getElementById("absenceReason").value;
+    if (!reason) return alert("Please provide a reason for absence.");
+    alert("Absence permission request sent.");
+    document.getElementById("absenceReason").value = "";
+  }
+
+  fetchDashboardData();
+</script>
+
+</body>
+</html>
+
+
+
